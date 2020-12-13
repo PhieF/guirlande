@@ -1,0 +1,53 @@
+<html>
+
+<body>
+	<script>
+	
+	function setColor(color){
+		document.getElementsByTagName('body')[0].style.background=color;
+	}
+	function setNextColor(){
+		setColor(colorSet[nextInd])
+		nextInd++;
+		if(nextInd >= colorSet.length)
+			nextInd = 0;
+	}
+	var alternateBlack = true
+	var latestTime = -1;
+	var blackInPair = true
+	var colorSet = ['blue', 'green', 'red', 'purple']
+	var nextInd = 0;
+	var startInter = setInterval(function(){
+		if(new Date(Date.now()).getMilliseconds() < 50){
+			clearInterval(startInter)
+			setInterval(function(){
+		var now = Math.floor(Date.now()/1000)
+		if(now == latestTime)
+			return
+		latestTime= now
+		if(alternateBlack){
+			if(blackInPair){
+				if(now%2 == 0){
+					setColor('black')
+				}
+				else setNextColor();
+			}
+			if(!blackInPair){
+				if(now%2 != 0){
+					setColor('black')
+				}
+				else setNextColor();
+			}
+		} 
+		else setNextColor();
+	}, 1000);
+		}
+	}, 10)
+	document.getElementsByTagName('body')[0].onclick= function(){
+		blackInPair = !blackInPair
+	}
+	
+	
+	</script>
+</body>
+</html>
