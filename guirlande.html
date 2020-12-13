@@ -12,16 +12,27 @@
 		if(nextInd >= colorSet.length)
 			nextInd = 0;
 	}
-	var alternateBlack = true
+	var alternateBlack = localStorage.getItem('alternateBlack');
+	console.log("alternateBlack "+alternateBlack)
+	if(alternateBlack == undefined)
+		alternateBlack = true
+	else alternateBlack = alternateBlack == "true"
 	var latestTime = -1;
-	var blackInPair = true
-	var colorSet = ['blue', 'green', 'red', 'purple']
-	var nextInd = 0;
+	var blackInPair = localStorage.getItem('blackInPair')
+	
+	if(blackInPair == undefined)
+		blackInPair = true
+	else blackInPair = blackInPair == "true"
+	var colorSetStr = localStorage.getItem('colorSet') || '["mediumslateblue", "green", "red", "purple", "cadetblue", "hotpink"]'
+	console.log(colorSetStr)
+	var colorSet = JSON.parse(colorSetStr)
+	var nextInd = Math.floor(Math.random() * Math.floor(colorSet.length-1));
+	
 	var startInter = setInterval(function(){
 		if(new Date(Date.now()).getMilliseconds() < 50){
 			clearInterval(startInter)
 			setInterval(function(){
-		var now = Math.floor(Date.now()/1000)
+		var now = Math.floor(Date.now()/1000/2)
 		if(now == latestTime)
 			return
 		latestTime= now
@@ -44,7 +55,17 @@
 		}
 	}, 10)
 	document.getElementsByTagName('body')[0].onclick= function(){
-		 var
+		toggleMenu();
+		
+	}
+	function toggleMenu(){
+		if(document.getElementById("menu").style.display == "none")
+			document.getElementById("menu").style.display = "block"
+		else
+			document.getElementById("menu").style.display = "none"
+	}
+	function fullscreen(){
+		var
           el = document.documentElement
         , rfs =
                el.requestFullScreen
@@ -52,10 +73,49 @@
             || el.mozRequestFullScreen
     ;
     rfs.call(el);
-		blackInPair = !blackInPair
 	}
-	
-	
+	function save(){
+			localStorage.setItem('blackInPair', blackInPair)
+			localStorage.setItem('alternateBlack', alternateBlack)
+			localStorage.setItem('colorSet', JSON.stringify(colorSet))
+
+
+	}
+	function saveColors(){
+		var colors = document.getElementById("colors").value
+		var parsed = JSON.parse(colors)
+		colorSet = parsed
+		save()
+		
+	}
 	</script>
+	<div id="menu">
+		Click on empty spaces to make menu appearing / disappearing <br />
+	<input type="checkbox" onclick = "event.stopPropagation();" onchange="alternateBlack=this.checked; save()" id="alternate-black" /> alternate black <br />
+	<input type="checkbox" onclick = "event.stopPropagation();" onchange="blackInPair=this.checked; save()" id="black-on-pair" /> black on pair<br />
+	Color set: please see <a href="https://htmlcolorcodes.com/fr/">colors</a> use hex value<br />
+	<textarea type="text" id="colors" onclick = "event.stopPropagation();" ></textarea> <br /><button onclick = "event.stopPropagation();saveColors()" >Save colors</button> <br />
+	<button onclick = "event.stopPropagation();fullscreen(); return true;" >Fullscreen</button>
+	
+	</div>
+	
+	<script>
+	document.getElementById("alternate-black").checked = alternateBlack
+		console.log("alternateBlack "+alternateBlack)
+
+	document.getElementById("black-on-pair").checked = blackInPair
+	document.getElementById("colors").innerHTML=JSON.stringify(colorSet)
+	</script>
+	<style>
+	#menu{
+		padding:10px;
+		background:white;
+	}
+	#colors{
+		width:100%;
+		max-width:600px;
+		height:200px;
+	}
+	</style>
 </body>
 </html>
