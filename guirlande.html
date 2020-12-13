@@ -14,9 +14,12 @@
 	}
 	function setNextColor(){
 		setColor(colorSet[nextInd])
-		nextInd++;
-		if(nextInd >= colorSet.length)
-			nextInd = 0;
+		var current = nextInd
+		do{
+			nextInd = Math.floor(Math.random() * Math.floor(colorSet.length-1));
+		}
+		while(nextInd == current)
+		
 	}
 	var alternateBlack = localStorage.getItem('alternateBlack');
 	console.log("alternateBlack "+alternateBlack)
@@ -57,7 +60,7 @@
 			}
 		} 
 		else setNextColor();
-	}, 1000);
+	}, 4000);
 		}
 	}, 10)
 	document.getElementsByTagName('body')[0].onclick= function(){
@@ -123,7 +126,7 @@
 		height:200px;
 	}
 	body{
-		transition: background-color 4s ease;
+		transition: background-color 8s linear;
 	}
 	</style>
 </body>
